@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class EmployeePayrollService implements IEmployeePayrollService {
-	
+
 	@Autowired
 	private EmployeePayrollRepository employeeRepository;
 
@@ -27,16 +27,20 @@ public class EmployeePayrollService implements IEmployeePayrollService {
 
 	@Override
 	public EmployeePayrollData getEmployeePayrollDataById(int empId) {
-		return employeeRepository
-				.findById(empId)
-				.orElseThrow(() -> new EmployeePayrollException("Employee with employee_id "+empId+" does not exist"));
+		return employeeRepository.findById(empId).orElseThrow(
+				() -> new EmployeePayrollException("Employee with employee_id " + empId + " does not exist"));
+	}
+
+	@Override
+	public List<EmployeePayrollData> getEmployeesByDepartment(String department) {
+		return employeeRepository.findEmployeesByDepartment(department);
 	}
 
 	@Override
 	public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO empPayrollDTO) {
 		EmployeePayrollData empData = null;
 		empData = new EmployeePayrollData(empPayrollDTO);
-		log.debug("Employee data: "+empData.toString());
+		log.debug("Employee data: " + empData.toString());
 		return employeeRepository.save(empData);
 	}
 
@@ -51,7 +55,6 @@ public class EmployeePayrollService implements IEmployeePayrollService {
 	public void deleteEmployeePayrollData(int empId) {
 		EmployeePayrollData empData = this.getEmployeePayrollDataById(empId);
 		employeeRepository.delete(empData);
-		
-	}
 
+	}
 }
